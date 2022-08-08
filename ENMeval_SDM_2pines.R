@@ -402,12 +402,6 @@ plot(P_raw_mid4_mpi)
 writeRaster(P_raw_mid4_mpi, "~/path/to/dir/pungens_raw_midHolocene_mpi.asc")
 
 
-#### Mid Holocene ensemble ####
-avg_env_mid <- (env_stack_midCCSM + env_stack_midMIROC + env_stack_midMPI)/3
-
-P_raw_mid_avg <- predict(eval.models(P_train)[["fc.LQ_rm.1"]], avg_env_mid, args="outputformat=raw")
-plot(P_raw_mid_avg)
-writeRaster(P_raw_mid_avg, "~/path/to/dir/pungens_raw_midHolocene_ensemble.asc", overwrite=TRUE)
 
 
 #### LGM ####
@@ -534,16 +528,7 @@ plot(P_raw_lgm4_mpi)
 writeRaster(P_raw_lgm4_mpi, "~/path/to/pungens_raw_lgm_mpi.asc")
 
 
-#### LGM ensemble - raster mean ####
-avg_env_lgm <- (env_stack_lgmCCSM + env_stack_lgmMIROC + env_stack_lgmMPI)/3
-P_raw_lgm_avg <- predict(eval.models(P_train)[["fc.LQ_rm.1"]], avg_env_lgm, args="outputformat=raw")
-plot(P_raw_lgm_avg)
-writeRaster(P_raw_lgm_avg, "~/path/to/pungens_raw_lgm_ensemble.asc", overwrite=TRUE)
 
-plot(env_stack_lgmCCSM$Bio15)
-plot(env_stack_lgmMIROC$Bio15)
-plot(env_stack_lgmMPI$Bio15)
-plot(avg_env_lgm$Bio15)
 
 ## Hindcast to Last Interglacial 
 setwd("~/path/to/WorldClim_data/lig_30s_bio/")
@@ -742,12 +727,6 @@ writeRaster(R_raw_midMPI, "~/path/to/dir/rigida_raw_midHolocene_mpi.asc")
 
 plot(P_raw_mid4_mpi)
 
-#### Rigida midH ensemble ####
-R_raw_mid_avg <- predict(eval.models(R_train5)[["fc.LQH_rm.3"]], avg_env_mid, args="outputformat=raw")
-plot(R_raw_mid_avg)
-plot(P_raw_mid_avg)
-writeRaster(R_raw_mid_avg, "~/path/to/dir/rigida_raw_midHolocene_ensemble.asc", overwrite=TRUE)
-
 
 
 ## LGM
@@ -773,11 +752,6 @@ plot(R_raw_lgmMPI)
 writeRaster(R_raw_lgmMPI, "~/path/to/dir/rigida_raw_lgm_mpi.asc")
 
 
-#### Rigida lgm ensemble ####
-R_raw_lgm_avg <- predict(eval.models(R_train5)[["fc.LQH_rm.3"]], avg_env_lgm, args="outputformat=raw")
-plot(R_raw_lgm_avg)
-plot(P_raw_lgm_avg)
-writeRaster(R_raw_lgm_avg, "~/path/to/dir/rigida_raw_lgm_ensemble.asc", overwrite=TRUE)
 
 
 
@@ -810,8 +784,6 @@ P_mid_standard_ccsm <- raster.standardize(P_raw_mid4)
 plot(P_mid_standard_ccsm)
 P_mid_standard_mpi <- raster.standardize(P_raw_mid4_mpi)
 plot(P_mid_standard_mpi)
-P_mid_ens <- raster.standardize(P_raw_mid_avg)
-writeRaster(P_mid_ens, "~/path/to/dir/standardized_SDM_predictions/Pungens_midH_standardized_ensemble.asc", overwrite=TRUE)
 
 
 R_mid_standard_miroc <- raster.standardize(R_raw_midMiroc)
@@ -820,9 +792,7 @@ R_mid_standard_ccsm <- raster.standardize(R_raw_mid)
 plot(R_mid_standard_ccsm)
 R_mid_standard_mpi <- raster.standardize(R_raw_midMPI)
 plot(P_mid_standard_mpi)
-R_mid_ens <- raster.standardize(R_raw_mid_avg)
-plot(R_mid_ens)
-writeRaster(R_mid_ens, "~/path/to/dir/standardized_SDM_predictions/Rigida_midH_standardized_ensemble.asc", overwrite=TRUE)
+
 
 
 P_lgm_standard_miroc <- raster.standardize(P_raw_lgm4_miroc)
@@ -832,10 +802,6 @@ plot(P_lgm_standard_ccsm)
 P_lgm_standard_mpi <- raster.standardize(P_raw_lgm4_mpi)
 plot(P_lgm_standard_mpi)
 
-P_lgm_standard_ens <- raster.standardize(P_raw_lgm_avg)
-plot(P_lgm_standard_ens)
-writeRaster(P_lgm_standard_ens, "~/path/to/dir/standardized_SDM_predictions/Pungens_lgm_standardized_ensemble.asc", overwrite=TRUE)
-
 
 R_lgm_standard_miroc <- raster.standardize(R_raw_lgmMiroc)
 plot(R_lgm_standard_miroc)
@@ -843,9 +809,6 @@ R_lgm_standard_ccsm <- raster.standardize(R_raw_lgm)
 plot(R_lgm_standard_ccsm)
 R_lgm_standard_mpi <- raster.standardize(R_raw_lgmMPI)
 plot(R_lgm_standard_mpi)
-R_lgm_standard_ens <- raster.standardize(R_raw_lgm_avg)
-plot(R_lgm_standard_ens)
-writeRaster(R_lgm_standard_ens, "~/path/to/dir/standardized_SDM_predictions/Rigida_lgm_standardized_ensemble.asc", overwrite=TRUE)
 
 
 
@@ -905,8 +868,9 @@ P_mid_cum2 <- cumulative(P_mid_standard_miroc)
 plot(P_mid_cum2)
 P_mid_cum3 <- cumulative(P_mid_standard_mpi)
 plot(P_mid_cum3)
-P_mid_ensemble <- cumulative(P_mid_ens)
-plot(P_mid_ensemble)
+#build ensemble
+P_mid_ens_cum <- (P_mid_cum1 + P_mid_cum2 + P_mid_cum3)/3
+
 
 R_mid_cum1 <- cumulative(R_mid_standard_ccsm)
 plot(R_mid_cum1)
@@ -914,8 +878,9 @@ R_mid_cum2 <- cumulative(R_mid_standard_miroc)
 plot(R_mid_cum2)
 R_mid_cum3 <- cumulative(R_mid_standard_mpi)
 plot(R_mid_cum3)
-R_mid_ensemble <- cumulative(R_mid_ens)
-plot(R_mid_ensemble)
+# build ensemble
+R_mid_ens_cum <- (R_mid_cum1 + R_mid_cum2 + R_mid_cum3)/3
+
 
 P_lgm_cum1 <- cumulative(P_lgm_standard_ccsm)
 plot(P_lgm_cum1)
@@ -923,8 +888,9 @@ P_lgm_cum2 <- cumulative(P_lgm_standard_miroc)
 plot(P_lgm_cum2)
 P_lgm_cum3 <- cumulative(P_lgm_standard_mpi)
 plot(P_lgm_cum3)
-P_lgm_ens_cum <- cumulative(P_lgm_standard_ens)
-plot(P_lgm_ens_cum)
+#build ensemble
+P_lgm_ens_cum <- (P_lgm_cum1 + P_lgm_cum2 + P_lgm_cum3)/3
+
 
 R_lgm_cum1 <- cumulative(R_lgm_standard_ccsm)
 plot(R_lgm_cum1)
@@ -932,9 +898,8 @@ R_lgm_cum2 <- cumulative(R_lgm_standard_miroc)
 plot(R_lgm_cum2)
 R_lgm_cum3 <- cumulative(R_lgm_standard_mpi)
 plot(R_lgm_cum3)
-R_lgm_ens_cum <- cumulative(R_lgm_standard_ens)
-plot(R_lgm_ens_cum)
-plot(P_lgm_ens_cum)
+#build ensemble
+R_lgm_ens_cum <- (R_lgm_cum1 + R_lgm_cum2 + R_lgm_cum3)/3
 
 P_lig_cum <- cumulative(P_lig_standard)
 plot(P_lig_cum)
@@ -952,7 +917,7 @@ writeRaster(P_lgm_cum2, "Pungens_lgm_mirocSDM_cumulative.asc", overwrite=TRUE)
 writeRaster(P_lgm_cum3, "Pungens_lgm_mpiSDM_cumulative.asc", overwrite=TRUE)
 writeRaster(P_lig_cum, "Pungens_lig_SDM_cumulative.asc", overwrite=TRUE)
 writeRaster(P_lgm_ens_cum, "Pungens_lgm_standard_ensemble_cumulative.asc", overwrite=TRUE)
-writeRaster(P_mid_ensemble, "Pungens_midH_standard_ensemble_cumulative.asc", overwrite=TRUE)
+writeRaster(P_mid_ens_cum, "Pungens_midH_standard_ensemble_cumulative.asc", overwrite=TRUE)
 
 
 writeRaster(R_now_cum, "Rigida_nowSDM_cumulative.asc")
@@ -964,7 +929,7 @@ writeRaster(R_lgm_cum2, "Rigida_lgm_mirocSDM_cumulative.asc")
 writeRaster(R_lgm_cum3, "Rigida_lgm_mpiSDM_cumulative.asc", overwrite=TRUE)
 writeRaster(R_lig_cum, "Rigida_lig_SDM_cumulative.asc")
 writeRaster(R_lgm_ens_cum, "Rigida_lgm_standard_ensemble_cumulative.asc", overwrite=TRUE)
-writeRaster(R_mid_ensemble, "Rigida_midH_standard_ensemble_cumulative.asc", overwrite=TRUE)
+writeRaster(R_mid_ens_cum, "Rigida_midH_standard_ensemble_cumulative.asc", overwrite=TRUE)
 
 
 
